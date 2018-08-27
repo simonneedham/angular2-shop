@@ -1,11 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Product } from './shared/product.model';
-import { DataService } from './data.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CartService } from './cart.service';
-import { AfterViewInit, ViewChild } from '@angular/core';
-
+import { DataService } from './data.service';
 import { FiltersComponent } from './filters/filters.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
+import { Product } from './shared/product.model';
 
 
 @Component({
@@ -13,13 +11,13 @@ import { SearchBarComponent } from './search-bar/search-bar.component';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
 
-  products: Product[]
+  products: Product[];
 
-  mainFilter: any
+  mainFilter: any;
 
-  currentSorting: string
+  currentSorting: string;
 
   @ViewChild('filtersComponent')
   filtersComponent: FiltersComponent;
@@ -28,25 +26,25 @@ export class AppComponent implements OnInit{
   searchComponent: SearchBarComponent;
 
   sortFilters: any[] = [
-    { name:'Name (A to Z)', value:'name' },
-    { name:'Price (low to high)', value:'priceAsc' },
-    { name:'Price (high to low)', value:'priceDes' }
-  ]
+    { name: 'Name (A to Z)', value: 'name' },
+    { name: 'Price (low to high)', value: 'priceAsc' },
+    { name: 'Price (high to low)', value: 'priceDes' }
+  ];
 
   customFilters: any[] = [
-    { name:'All', value:'all', checked:true },
-    { name:'Available', value:'available', checked:false },
-    { name:'Not Available', value:'unavailable', checked:false },
-    { name:'Bestseller', value:'bestseller', checked:false }
+    { name: 'All', value: 'all', checked: true },
+    { name: 'Available', value: 'available', checked: false },
+    { name: 'Not Available', value: 'unavailable', checked: false },
+    { name: 'Bestseller', value: 'bestseller', checked: false }
   ]
 
   priceFilters: any[] = [
-    { name:'All', value:'all', checked:true },
-    { name:'Price > 30.000', value:'more_30000', checked:false },
-    { name:'Price < 10.000', value:'less_10000', checked:false }
+    { name: 'All', value: 'all', checked: true },
+    { name: 'Price > 5.00', value: 'more_5', checked: false },
+    { name: 'Price < 3.00', value: 'less_3', checked: false }
   ]
 
-  originalData: any = []
+  originalData: any = [];
 
   constructor(private dataService: DataService, private cartService: CartService){  }
 
@@ -54,23 +52,23 @@ export class AppComponent implements OnInit{
 
 
     this.dataService.getData().then(data => {
-      this.originalData = data
+      this.originalData = data;
       this.mainFilter = {
         search: '',
         categories: this.originalData.categories.slice(0),
         customFilter: this.customFilters[0],
         priceFilter: this.priceFilters[0]
-      }
+      };
 
-      //Make a deep copy of the original data to keep it immutable
+      // Make a deep copy of the original data to keep it immutable
       this.products = this.originalData.products.slice(0)
       this.sortProducts('name')
-    })
+    });
   }
 
-  onURLChange(url){
+  onURLChange(url) {
     this.dataService.getRemoteData(url).subscribe(data => {
-      this.originalData = data
+      this.originalData = data;
       this.mainFilter = {
         search: '',
         categories: this.originalData.categories.slice(0),
@@ -78,13 +76,13 @@ export class AppComponent implements OnInit{
         priceFilter: this.priceFilters[0]
       }
 
-      //Make a deep copy of the original data to keep it immutable
-      this.products = this.originalData.products.slice(0)
-      this.sortProducts('name')
-      this.filtersComponent.reset(this.customFilters, this.priceFilters)
-      this.searchComponent.reset()
-      this.cartService.flushCart()
-    })
+      // Make a deep copy of the original data to keep it immutable
+      this.products = this.originalData.products.slice(0);
+      this.sortProducts('name');
+      this.filtersComponent.reset(this.customFilters, this.priceFilters);
+      this.searchComponent.reset();
+      this.cartService.flushCart();
+    });
   }
 
 
@@ -173,9 +171,9 @@ export class AppComponent implements OnInit{
         let productPrice = parseFloat(product.price.replace(/\./g, '').replace(',', '.'))
         if(customFilter == 'all'){
           passPriceFilter = true;
-        }else if(customFilter == 'more_30000' && productPrice > 30000){
+        }else if(customFilter == 'more_5' && productPrice > 5.00){
           passPriceFilter = true;
-        }else if(customFilter == 'less_10000' && productPrice < 10000){
+        }else if(customFilter == 'less_3' && productPrice < 3.00){
           passPriceFilter = true;
         }
         if(!passPriceFilter){

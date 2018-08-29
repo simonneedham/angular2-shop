@@ -8,24 +8,23 @@ import { CartService } from '../cart.service';
   styleUrls: ['./product-thumbnail.component.scss']
 })
 export class ProductThumbnailComponent implements OnInit {
-  @Input() product: Product
+  @Input() product: Product;
 
-  detailViewActive: boolean
+  detailViewActive: boolean;
 
   constructor(private cartService: CartService) {
-
   }
 
   ngOnInit() {
-    this.detailViewActive = false
+    this.detailViewActive = false;
   }
 
-  onProductClick(){
-    this.detailViewActive = !this.detailViewActive
+  onProductClick() {
+    this.detailViewActive = !this.detailViewActive;
   }
 
-  onAddToCart(){
-    this.cartService.addProductToCart(this.product)
+  onAddToCart() {
+    this.cartService.addProductToCart(this.product);
   }
 
 }

@@ -1,43 +1,25 @@
 
-import {throwError as observableThrowError,  Observable } from 'rxjs';
-
-import {catchError, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
-
-import { DATA } from './mock-data';
-
-
-
-
+import { CATEGORIES, PRODUCTS } from './mock-data';
+import { Product } from './shared/product.model';
+import { Observable, of } from 'rxjs';
+import { Category } from './shared/category.model';
 
 @Injectable()
 export class DataService {
+  private products: Product[];
 
-  constructor(private http: Http) { }
+  constructor() { }
 
-  getData(): Promise<any>{
-    return Promise.resolve(DATA)
+  getCategories(): Observable<Category[]> {
+    return of(CATEGORIES);
   }
 
-  getRemoteData(url): Observable<any>{
-    return this.http.get(url).pipe(
-                    map(this.extractData),
-                    catchError(this.handleError),);
-  }
+  getProducts(): Observable<Product[]> {
+    if (!this.products) {
+      this.products = PRODUCTS.map(rawP => new Product(rawP));
+    }
 
-  private extractData(res: Response) {
-    let body = res.json();
-    return body || { };
+    return of(this.products);
   }
-
-  private handleError (error: any) {
-    // In a real world app, we might use a remote logging infrastructure
-    // We'd also dig deeper into the error to get a better message
-    let errMsg = (error.message) ? error.message :
-      error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-    console.error(errMsg); // log to console instead
-    return observableThrowError(errMsg);
-  }
-
 }

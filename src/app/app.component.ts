@@ -4,6 +4,8 @@ import { DataService } from './data.service';
 import { FiltersComponent } from './filters/filters.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { Product } from './shared/product.model';
+import { combineLatest } from 'rxjs';
+import { Category } from './shared/category.model';
 
 
 @Component({
@@ -36,59 +38,46 @@ export class AppComponent implements OnInit {
     { name: 'Available', value: 'available', checked: false },
     { name: 'Not Available', value: 'unavailable', checked: false },
     { name: 'Bestseller', value: 'bestseller', checked: false }
-  ]
+  ];
 
   priceFilters: any[] = [
     { name: 'All', value: 'all', checked: true },
     { name: 'Price > 5.00', value: 'more_5', checked: false },
     { name: 'Price < 3.00', value: 'less_3', checked: false }
-  ]
+  ];
 
-  originalData: any = [];
+  // originalData: any = [];
+
+  originalCategories: Category[];
+  private originalProducts: Product[];
 
   constructor(private dataService: DataService, private cartService: CartService){  }
 
-  ngOnInit(){
+  ngOnInit() {
+    combineLatest(
+      this.dataService.getCategories(),
+      this.dataService.getProducts()
+    )
+    .subscribe(([c, p]) => {
+      this.originalCategories = c;
+      this.originalProducts = p;
 
-
-    this.dataService.getData().then(data => {
-      this.originalData = data;
       this.mainFilter = {
         search: '',
-        categories: this.originalData.categories.slice(0),
+        categories: c.slice(0),
         customFilter: this.customFilters[0],
         priceFilter: this.priceFilters[0]
       };
 
       // Make a deep copy of the original data to keep it immutable
-      this.products = this.originalData.products.slice(0)
-      this.sortProducts('name')
-    });
-  }
-
-  onURLChange(url) {
-    this.dataService.getRemoteData(url).subscribe(data => {
-      this.originalData = data;
-      this.mainFilter = {
-        search: '',
-        categories: this.originalData.categories.slice(0),
-        customFilter: this.customFilters[0],
-        priceFilter: this.priceFilters[0]
-      }
-
-      // Make a deep copy of the original data to keep it immutable
-      this.products = this.originalData.products.slice(0);
+      this.products = p.slice(0);
       this.sortProducts('name');
-      this.filtersComponent.reset(this.customFilters, this.priceFilters);
-      this.searchComponent.reset();
-      this.cartService.flushCart();
     });
   }
-
 
 
   onSearchChange(search){
-    this.mainFilter.search = search.search
+    this.mainFilter.search = search.search;
     this.updateProducts({
       type:'search',
       change:search.change
@@ -113,20 +102,19 @@ export class AppComponent implements OnInit {
     })
   }
 
-  updateProducts(filter){
-    let productsSource = this.originalData.products
-    let prevProducts = this.products
+  updateProducts(filter) {
+    let productsSource = this.originalProducts;
+    const prevProducts = this.products;
     let filterAllData = true
-    if((filter.type=='search' && filter.change == 1) || (filter.type=='category' && filter.change == -1)){
-      productsSource = this.products
-      filterAllData = false
+    if ((filter.type == 'search' && filter.change == 1) || (filter.type == 'category' && filter.change == -1)){
+      productsSource = this.products;
+      filterAllData = false;
     }
-    //console.log('filtering ' + productsSource.length + ' products')
 
     this.products = productsSource.filter(product => {
-      //Filter by search
-      if(filterAllData || filter.type=='search'){
-        if (!product.name.match(new RegExp(this.mainFilter.search, 'i'))){
+      // Filter by search
+      if (filterAllData || filter.type == 'search'){
+        if (!product.name.match(new RegExp(this.mainFilter.search, 'i'))) {
           return false;
         }
       }

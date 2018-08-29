@@ -1,14 +1,13 @@
 <div class="main-container">
   <div class="container">
     <div class="row flex-container">
-        <h1 class="title">Dylan's Online Yu-Gi-Oh Card Game Store</h1>
+        <h1 class="title">Dylan's Online Yu-Gi-Oh Card Game Shop</h1>
     </div>
     <div class="row">
       <div class="col-3">
         <div class="filters-wrapper">
-          <url-form (onURLChange)='onURLChange($event)'></url-form>
           <cart></cart>
-          <filters #filtersComponent [categories]='originalData.categories' [customFilters]='customFilters' [priceFilters]='priceFilters' (onFilterChange)='onFilterChange($event)'></filters>
+          <filters #filtersComponent [categories]='originalCategories' [customFilters]='customFilters' [priceFilters]='priceFilters' (onFilterChange)='onFilterChange($event)'></filters>
         </div>
       </div>
       <div class="col-9">

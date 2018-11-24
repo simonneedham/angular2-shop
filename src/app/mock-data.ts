@@ -250,5 +250,14 @@ export const PRODUCTS: Partial<Product>[] =  [
       'img': '/assets/products/ghost-belle-haunted-mansion.jpg',
       'description': 'Level 3 earth attribute, 0 ATK - 1800 DEF points',
       'stockLevel': 1
+    },
+    {
+      'id': 24,
+      'name': 'Amazoness Onlaught',
+      'price': '3.20',
+      'categories': [3],
+      'img': '/assets/products/amazoness-onslaught.jpg',
+      'description': 'Continuous trap',
+      'stockLevel': 1
     }
   ];

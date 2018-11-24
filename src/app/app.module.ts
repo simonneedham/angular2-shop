@@ -16,7 +16,6 @@ import { SortFiltersComponent } from './sort-filters/sort-filters.component';
 
 import { DataService } from './data.service';
 import { CartService } from './cart.service';
-import { UrlFormComponent } from './url-form/url-form.component';
 
 @NgModule({
   declarations: [
@@ -29,8 +28,7 @@ import { UrlFormComponent } from './url-form/url-form.component';
     ProductThumbnailComponent,
     CartPreviewComponent,
     DataShellComponent,
-    SortFiltersComponent,
-    UrlFormComponent
+    SortFiltersComponent
   ],
   imports: [
     BrowserModule,
